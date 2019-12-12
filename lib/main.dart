@@ -38,8 +38,8 @@ class _QuizPageState extends State<QuizPage> {
       if (quizBrain.isFinished()) {
         Alert(
             context: context,
-            title: "RFLUTTER",
-            desc: "Flutter is awesome.",
+            title: "Congratulations",
+            desc: "You made it through the quiz.",
             type: AlertType.success,
             buttons: [
               DialogButton(
@@ -50,7 +50,7 @@ class _QuizPageState extends State<QuizPage> {
                     Navigator.pop(context);
                   });
                 },
-                child: Text("Well done, start from the beginning!"),
+                child: Text("Start from the beginning!"),
               )
             ]).show();
       } else {
