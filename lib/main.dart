@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:quizzler/quiz_brain.dart';
 
-var quizBrain = QuizBrain();
+//TODO: Step 2 - Import the rFlutter_Alert package here.
+import 'quiz_brain.dart';
+
+QuizBrain quizBrain = QuizBrain();
 
 void main() => runApp(Quizzler());
 
@@ -11,6 +12,7 @@ class Quizzler extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.grey.shade900,
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -28,9 +30,33 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> scoreBoardList = [];
+  List<Icon> scoreKeeper = [];
 
-  int questionNumber = 0;
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = quizBrain.getCorrectAnswer();
+
+    setState(() {
+      //TODO: Step 4 - Use IF/ELSE to check if we've reached the end of the quiz. If true, execute Part A, B, C, D.
+      //TODO: Step 4 Part A - show an alert using rFlutter_alert (remember to read the docs for the package!)
+      //HINT! Step 4 Part B is in the quiz_brain.dart
+      //TODO: Step 4 Part C - reset the questionNumber,
+      //TODO: Step 4 Part D - empty out the scoreKeeper.
+
+      //TODO: Step 5 - If we've not reached the end, ELSE do the answer checking steps below 👇
+      if (userPickedAnswer == correctAnswer) {
+        scoreKeeper.add(Icon(
+          Icons.check,
+          color: Colors.green,
+        ));
+      } else {
+        scoreKeeper.add(Icon(
+          Icons.close,
+          color: Colors.red,
+        ));
+      }
+      quizBrain.nextQuestion();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +70,12 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                quizBrain.questions[questionNumber].question,
+                quizBrain.getQuestionText(),
                 textAlign: TextAlign.center,
-                style: GoogleFonts.magra(fontSize: 25.0),
+                style: TextStyle(
+                  fontSize: 25.0,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -65,16 +94,8 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                evaluateCorrectAnswer(
-                    quizBrain.questions[questionNumber].answer, true);
-
                 //The user picked true.
-                setState(() {
-                  questionNumber =
-                  questionNumber == quizBrain.questions.length - 1
-                      ? 0
-                      : questionNumber + 1;
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -93,36 +114,16 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked false.
-                evaluateCorrectAnswer(
-                    quizBrain.questions[questionNumber].answer, false);
-                setState(() {
-                  questionNumber =
-                  questionNumber == quizBrain.questions.length - 1
-                      ? 0
-                      : questionNumber + 1;
-                });
+                checkAnswer(false);
               },
             ),
           ),
         ),
         Row(
-          children: scoreBoardList,
+          children: scoreKeeper,
         )
       ],
     );
   }
-
-  void evaluateCorrectAnswer(bool correctAnswer, bool clickedValue) {
-    if (correctAnswer == clickedValue) {
-      scoreBoardList.add(Icon(
-        Icons.check,
-        color: Colors.green,
-      ));
-    } else {
-      scoreBoardList.add(Icon(
-        Icons.close,
-        color: Colors.red,
-      ));
-    }
-  }
 }
+
